@@ -199,8 +199,8 @@
                                       </div>
                                       <button type='submit' class='btn btn-warning'>Lihat Data</button>"; 
                                       ?>       
-                                      <input type="hidden" name="posisi" value="<?php echo $_GET['posisi']; ?>">
-                                      <input type="hidden" name="kandidat" value="<?php echo $_GET['kandidat']; ?>">
+                                        <input type="hidden" name="posisi" value="<?php echo $_GET['posisi']; ?>">
+                                        <input type="hidden" name="kandidat" value="<?php echo $_GET['kandidat']; ?>">
                                       <?php                        
                                     echo"</div>
                                   </form>
@@ -234,6 +234,7 @@
                                       }
 
                                       arsort($array_kriteria_skor_sort);
+                                      print_r($array_kriteria_skor_sort);
 
                                       foreach($array_kriteria_skor_sort as $key => $value){
                                         echo"{x: '".split(' ',$key)[0]."', ";
@@ -293,8 +294,8 @@
                                     </div>
                                     <button type='submit' class='btn btn-warning'>Lihat Data</button>"; 
                                     ?>       
-                                    <input type="hidden" name="posisi" value="<?php echo $_GET['posisi']; ?>">
-                                    <input type="hidden" name="kriteria" value="<?php echo $_GET['kriteria']; ?>">
+                                      <input type="hidden" name="posisi" value="<?php echo $_GET['posisi']; ?>">
+                                      <input type="hidden" name="kriteria" value="<?php echo $_GET['kriteria']; ?>">
                                     <?php                        
                                   echo"</div>
                                 </form>
@@ -370,26 +371,36 @@
                                 </pre>
                               </div>
                               <div class='col-md-6'>";
-                              echo"<div id='graph4' style='height: 300px; width: 500px'></div>
+                              if (isset($_GET['kandidat'])){
+                                $id_kandidat = $_GET['kandidat']; // indeks kandidat di db
+                              }
+                              else {
+                                $id_kandidat = $array_id_kandidat[0];
+                              }
+                              // print($id_kandidat);
+                              $sql="SELECT * FROM kandidat WHERE id_kandidat = '$id_kandidat'";
+                              $res=mysqli_query($connection, $sql) or die (mysqli_error($connection));
+                              $kand = $res->fetch_assoc();
+                              // print($kand['nama_kandidat']);
+                              // print_r($kand);
+                              if ($kand['jumlah_sentimen_net'] > 0){
+                                echo"<div id='graph4' style='height: 300px; width: 500px'></div>
                                 <pre style='display:none' id='code4' class='prettyprint linenums morris-chart'>";
-                                  $id_kandidat = $_GET['kandidat'];
-                                  $sql="SELECT * FROM kandidat WHERE id_kandidat = '$id_kandidat'";
-                                  $res=mysqli_query($connection, $sql) or die (mysqli_error($connection));
-                                  $rslt = $res->fetch_assoc();
                                   echo"Morris.Donut({
                                   element: 'graph4',
                                   data: [
-                                    {value: '".$rslt['sentimen_positif']."', label: 'Positif'},
-                                    {value: '".$rslt['sentimen_negatif'].", label: 'Negatif'},
-                                    {value: '".$rslt['sentimen_neutral'].", label: 'Neutral'}
+                                    {value: '".$kand['jumlah_sentimen_pos']."', label: 'Positif'},
+                                    {value: '".$kand['jumlah_sentimen_neg']."', label: 'Negatif'},
+                                    {value: '".$kand['jumlah_sentimen_net']."', label: 'Neutral'}
                                   ],
                                   formatter: function (x) {return x + '%'}
                                 }).on('click', function(i, row){
                                   console.log(i, row);
                                 });
                                 </pre>
-                              </div>
-                            </div>
+                              </div>";
+                              }
+                            echo"</div>
                           </div>
                         </div>";
                       } else {
