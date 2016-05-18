@@ -1,0 +1,4 @@
+Bagaimana cara bikin list kata positif
+Referensi sentiwordnet
+Confusion matrix dilihat yang salah
+Coba yang 2 tingkat klasifikasi
